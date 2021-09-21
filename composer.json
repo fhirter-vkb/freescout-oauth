@@ -1,0 +1,25 @@
+{
+    "name": "freescout/oauth",
+    "description": "",
+    "authors": [
+        {
+            "name": "Mike Bolsunovskyi",
+            "email": "mike@bolsunovskyi.com"
+        }
+    ],
+    "extra": {
+        "laravel": {
+            "providers": [
+                "Modules\\OAuth\\Providers\\OAuthServiceProvider"
+            ],
+            "aliases": {
+                
+            }
+        }
+    },
+    "autoload": {
+        "psr-4": {
+            "Modules\\OAuth\\": ""
+        }
+    }
+}
