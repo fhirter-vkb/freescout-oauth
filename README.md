@@ -11,6 +11,6 @@ If you need to perform ordinary login with basic form, add `disable_oauth` get p
 User must be registered before oauth login. 
 
 ## INSTALL
-- place module source to Modules folder of your FreeScout installation
+- place module source to Modules folder of your FreeScout installation, module must have **OAuth** folder name to work propperly. If you are clonning repo with git, just add folder name in the end of git clone command.
 - enable module in modules admin panel
 - configure module on settings page (client id/secret/etc) 
