@@ -55,6 +55,6 @@ class OAuthController extends Controller
         $user = User::where('email','=', $data['email'])->first();
         Auth::login($user);
 
-        return redirect('/');
+        return redirect($request->session()->get('url.intended', '/'));
     }
 }
