@@ -26,8 +26,8 @@ class OAuthController extends Controller
             'oauth.user_url',
         ]);
 
-        $ch = curl_init($settings['oauth.token_url']);
-        curl_setopt_array($ch, [
+        $tokenCh = curl_init($settings['oauth.token_url']);
+        curl_setopt_array($tokenCh, [
             CURLOPT_RETURNTRANSFER => 1,
             CURLOPT_POST => 1,
             CURLOPT_POSTFIELDS => http_build_query([
@@ -42,16 +42,16 @@ class OAuthController extends Controller
                 'Content-Type: application/x-www-form-urlencoded; charset=utf-8',
             ],
         ]);
-        $tokenData = json_decode(curl_exec($ch), true);
+        $tokenData = json_decode(curl_exec($tokenCh), true);
         $accessToken = $tokenData['access_token'];
 
-        curl_setopt_array($ch, [
-            CURLOPT_URL => $settings['oauth.user_url'],
+        $userCh = curl_init($settings['oauth.user_url']);
+        curl_setopt_array($userCh, [
             CURLOPT_HTTPHEADER => [
                 'Authorization: Bearer ' . $accessToken,
             ],
         ]);
-        $userData = json_decode(curl_exec($ch), true);
+        $userData = json_decode(curl_exec($userCh), true);
 
         $name = $this->getName($userData['name']);
 
