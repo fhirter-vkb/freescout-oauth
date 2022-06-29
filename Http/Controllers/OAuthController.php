@@ -47,6 +47,8 @@ class OAuthController extends Controller
 
         $userCh = curl_init($settings['oauth.user_url']);
         curl_setopt_array($userCh, [
+            CURLOPT_RETURNTRANSFER => 1,
+            CURLINFO_HEADER_OUT => true,
             CURLOPT_HTTPHEADER => [
                 'Authorization: Bearer ' . $accessToken,
             ],
