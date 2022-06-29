@@ -7,6 +7,7 @@ use Illuminate\Http\Response;
 use Illuminate\Routing\Controller;
 use \App\User;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Str;
 
 
 class OAuthController extends Controller
@@ -41,8 +42,8 @@ class OAuthController extends Controller
                 'Content-Type: application/x-www-form-urlencoded; charset=utf-8',
             ],
         ]);
-        $data = json_decode(curl_exec($ch), true);
-        $accessToken = $data['access_token'];
+        $tokenData = json_decode(curl_exec($ch), true);
+        $accessToken = $tokenData['access_token'];
 
         curl_setopt_array($ch, [
             CURLOPT_URL => $settings['oauth.user_url'],
@@ -50,11 +51,37 @@ class OAuthController extends Controller
                 'Authorization: Bearer ' . $accessToken,
             ],
         ]);
-        $data = json_decode(curl_exec($ch), true);
+        $userData = json_decode(curl_exec($ch), true);
 
-        $user = User::where('email','=', $data['email'])->first();
+        $name = $this->getName($userData['name']);
+
+        $user = User::firstOrCreate([
+            'email' => $userData['email']
+            ],
+            [
+                'name'          => $userData['name'],
+                'first_name'    => $name['first'],
+                'last_name'     => $name['last'],
+                'email'         => $userData['email'],
+                'password'      => Str::random(26)
+            ]
+        );
+
         Auth::login($user);
 
         return redirect($request->session()->get('url.intended', '/'));
+    }
+
+    private function getName($nameString)
+    {
+        $nameArray = explode(" ", $nameString);
+        if ($nameArray && (count($nameArray) == 2)) {
+            $name['first'] = $nameArray[0];
+            $name['last'] = $nameArray[1];
+        } else {
+            $name['first'] = $nameString;
+            $name['last'] = '';
+        }
+        return $name;
     }
 }
